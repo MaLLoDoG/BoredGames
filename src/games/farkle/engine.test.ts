@@ -57,8 +57,8 @@ function decideState(opts: {
     dice,
     turnTotal: opts.turnTotal ?? 0,
     players: opts.players ?? [
-      { id: 0, name: 'Alice', score: opts.score ?? 0, onBoard: opts.onBoard ?? true, consecutiveFarkles: 0 },
-      { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+      { id: 0, name: 'Alice', score: opts.score ?? 0, onBoard: opts.onBoard ?? true, consecutiveFarkles: 0, quit: false },
+      { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
     ],
   })
 }
@@ -174,8 +174,8 @@ describe('§4 actionRoll', () => {
     const state = stateWith({
       phase: 'roll',
       players: [
-        { id: 0, name: 'Alice', score: 1000, onBoard: true, consecutiveFarkles: 1 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 1000, onBoard: true, consecutiveFarkles: 1, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
     })
     // Run until we get a farkle and verify counter went up
@@ -195,8 +195,8 @@ describe('§4 actionRoll', () => {
     const state = stateWith({
       phase: 'roll',
       players: [
-        { id: 0, name: 'Alice', score: 2000, onBoard: true, consecutiveFarkles: 2 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 2000, onBoard: true, consecutiveFarkles: 2, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
       settings: { threeFarkleRule: true, targetScore: 10000 },
     })
@@ -215,8 +215,8 @@ describe('§4 actionRoll', () => {
     const state = stateWith({
       phase: 'roll',
       players: [
-        { id: 0, name: 'Alice', score: 2000, onBoard: true, consecutiveFarkles: 2 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 2000, onBoard: true, consecutiveFarkles: 2, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
       settings: { threeFarkleRule: false, targetScore: 10000 },
     })
@@ -413,8 +413,8 @@ describe('§7 on-the-board minimum (bank action)', () => {
       phase: 'decide',
       turnTotal: 400,
       players: [
-        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
     })
     const next = actionBank(state)
@@ -426,8 +426,8 @@ describe('§7 on-the-board minimum (bank action)', () => {
       phase: 'decide',
       turnTotal: 500,
       players: [
-        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
     })
     const next = actionBank(state)
@@ -440,8 +440,8 @@ describe('§7 on-the-board minimum (bank action)', () => {
       phase: 'decide',
       turnTotal: 150,
       players: [
-        { id: 0, name: 'Alice', score: 600, onBoard: true, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 600, onBoard: true, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
     })
     const next = actionBank(state)
@@ -454,8 +454,8 @@ describe('§7 on-the-board minimum (bank action)', () => {
       turnTotal: 500,
       currentPlayerIndex: 0,
       players: [
-        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
     })
     const next = actionBank(state)
@@ -469,8 +469,8 @@ describe('§7 on-the-board minimum (bank action)', () => {
       phase: 'decide',
       turnTotal: 500,
       players: [
-        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 2 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 2, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
     })
     const next = actionBank(state)
@@ -530,8 +530,8 @@ describe('§10 three consecutive farkles', () => {
       phase: 'decide',
       turnTotal: 500,
       players: [
-        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 2 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 2, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
     })
     const afterBank = actionBank(state)
@@ -542,8 +542,8 @@ describe('§10 three consecutive farkles', () => {
     const state = stateWith({
       phase: 'roll',
       players: [
-        { id: 0, name: 'Alice', score: 1000, onBoard: true, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 1000, onBoard: true, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
     })
     for (let i = 0; i < 500; i++) {
@@ -560,8 +560,8 @@ describe('§10 three consecutive farkles', () => {
     const state = stateWith({
       phase: 'roll',
       players: [
-        { id: 0, name: 'Alice', score: 500, onBoard: true, consecutiveFarkles: 2 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 500, onBoard: true, consecutiveFarkles: 2, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
       settings: { threeFarkleRule: true, targetScore: 10000 },
     })
@@ -584,8 +584,8 @@ describe('§11 final round trigger', () => {
       phase: 'decide',
       turnTotal: 1000,
       players: [
-        { id: 0, name: 'Alice', score: 9500, onBoard: true, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 9500, onBoard: true, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
     })
     const next = actionBank(state)
@@ -600,8 +600,8 @@ describe('§11 final round trigger', () => {
       turnTotal: 1000,
       currentPlayerIndex: 0,
       players: [
-        { id: 0, name: 'Alice', score: 9500, onBoard: true, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 9500, onBoard: true, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
     })
     const next = actionBank(state)
@@ -617,8 +617,8 @@ describe('§11 final round trigger', () => {
       finalRoundTriggeredBy: 0,
       finalRoundPlayersLeft: [1],
       players: [
-        { id: 0, name: 'Alice', score: 10500, onBoard: true, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 200, onBoard: true, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 10500, onBoard: true, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 200, onBoard: true, consecutiveFarkles: 0, quit: false },
       ],
     })
     const next = actionBank(state)
@@ -634,8 +634,8 @@ describe('§11 final round trigger', () => {
       finalRoundTriggeredBy: 0,
       finalRoundPlayersLeft: [1],
       players: [
-        { id: 0, name: 'Alice', score: 10000, onBoard: true, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 9500, onBoard: true, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 10000, onBoard: true, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 9500, onBoard: true, consecutiveFarkles: 0, quit: false },
       ],
     })
     const next = actionBank(state)
@@ -650,8 +650,8 @@ describe('§11 final round trigger', () => {
       finalRoundTriggeredBy: 0,
       finalRoundPlayersLeft: [1],
       players: [
-        { id: 0, name: 'Alice', score: 10500, onBoard: true, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 200, onBoard: true, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 10500, onBoard: true, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 200, onBoard: true, consecutiveFarkles: 0, quit: false },
       ],
     })
     const next = actionAcknowledgeFarkle(state)
@@ -665,9 +665,9 @@ describe('§11 final round trigger', () => {
       turnTotal: 1000,
       currentPlayerIndex: 0,
       players: [
-        { id: 0, name: 'Alice', score: 9500, onBoard: true, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 5000, onBoard: true, consecutiveFarkles: 0 },
-        { id: 2, name: 'Carol', score: 6000, onBoard: true, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 9500, onBoard: true, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 5000, onBoard: true, consecutiveFarkles: 0, quit: false },
+        { id: 2, name: 'Carol', score: 6000, onBoard: true, consecutiveFarkles: 0, quit: false },
       ],
     })
     const triggered = actionBank(state)
@@ -683,29 +683,32 @@ describe('§12 quit', () => {
     const state = stateWith({
       phase: 'roll',
       players: [
-        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 500, onBoard: true, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 500, onBoard: true, consecutiveFarkles: 0, quit: false },
       ],
     })
     const next = actionQuit(state)
     expect(next.phase).toBe('game-over')
     expect(next.winner).toBe(1)
+    expect(next.winByForfeit).toBe(true)
   })
 
-  it('multi-player quit removes player and continues', () => {
+  it('multi-player quit marks player as quit and continues', () => {
     const state = stateWith({
       phase: 'roll',
       currentPlayerIndex: 0,
       players: [
-        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 0 },
-        { id: 1, name: 'Bob', score: 500, onBoard: true, consecutiveFarkles: 0 },
-        { id: 2, name: 'Carol', score: 300, onBoard: false, consecutiveFarkles: 0 },
+        { id: 0, name: 'Alice', score: 0, onBoard: false, consecutiveFarkles: 0, quit: false },
+        { id: 1, name: 'Bob', score: 500, onBoard: true, consecutiveFarkles: 0, quit: false },
+        { id: 2, name: 'Carol', score: 300, onBoard: false, consecutiveFarkles: 0, quit: false },
       ],
     })
     const next = actionQuit(state)
     expect(next.phase).toBe('roll')
-    expect(next.players).toHaveLength(2)
-    expect(next.players.find((p) => p.name === 'Alice')).toBeUndefined()
+    // all 3 still present — quitter is marked, not removed
+    expect(next.players).toHaveLength(3)
+    expect(next.players.find((p) => p.name === 'Alice')?.quit).toBe(true)
+    expect(next.players.find((p) => p.name === 'Bob')?.quit).toBe(false)
   })
 
   it('quit logs the event', () => {

@@ -28,6 +28,7 @@ export interface PlayerState {
   score: number         // permanent banked score
   onBoard: boolean      // has banked ≥500 in a single turn (§7)
   consecutiveFarkles: number  // for three-farkle rule (§10)
+  quit: boolean         // player forfeited mid-game
 }
 
 export interface FarkleState {
@@ -44,6 +45,7 @@ export interface FarkleState {
     targetScore: number       // §1 — 10000
   }
   winner: number | null     // player index of winner, set when game-over
+  winByForfeit: boolean     // true when winner won because all others quit
 }
 
 // ─── Section 6 — Scoring ────────────────────────────────────────────────────
@@ -279,6 +281,7 @@ export function createGame(
       score: 0,
       onBoard: false,
       consecutiveFarkles: 0,
+      quit: false,
     })),
     currentPlayerIndex: 0,
     dice: Array.from({ length: 6 }, (_, i) => ({
@@ -297,6 +300,7 @@ export function createGame(
       targetScore: settings.targetScore ?? 10000,
     },
     winner: null,
+    winByForfeit: false,
   }
 }
 
@@ -509,27 +513,45 @@ export function actionAcknowledgeFarkle(state: FarkleState): FarkleState {
   return advanceTurn(state)
 }
 
-/** Quit — current player forfeits. If one player left, they win. */
+/** §12 — Quit. Mark the current player as forfeited. If only one active player
+ *  remains, they win — even if the quitter had a higher score (forfeit = forfeit).
+ *  All players stay in state.players so the game-over screen can show full scores.
+ */
 export function actionQuit(state: FarkleState): FarkleState {
-  const remaining = state.players.filter((p) => p.id !== state.players[state.currentPlayerIndex].id)
-  if (remaining.length === 1) {
+  const quitter = state.players[state.currentPlayerIndex]
+  const players = state.players.map((p) =>
+    p.id === quitter.id ? { ...p, quit: true } : p
+  )
+  const active = players.filter((p) => !p.quit)
+  const quitMsg = `${quitter.name} quit.`
+
+  if (active.length === 1) {
+    // Last one standing wins by forfeit — regardless of scores
     return {
       ...state,
+      players,
       phase: 'game-over',
-      winner: remaining[0].id,
-      log: [...state.log, `${state.players[state.currentPlayerIndex].name} quit. ${remaining[0].name} wins!`],
+      winner: active[0].id,
+      winByForfeit: true,
+      log: [...state.log, `${quitMsg} ${active[0].name} wins by forfeit!`],
     }
   }
-  // Multi-player: remove the quitter and continue (keep original ids)
-  const nextIdx = state.currentPlayerIndex % remaining.length
+
+  if (active.length === 0) {
+    // Shouldn't happen, but guard against it
+    return { ...state, players, phase: 'game-over', winner: null, winByForfeit: false, log: [...state.log, quitMsg] }
+  }
+
+  // Multi-player: skip quitters when advancing turn
+  const nextActive = active[(active.findIndex((p) => p.id > quitter.id) + active.length) % active.length]
   return {
     ...state,
-    players: remaining,
-    currentPlayerIndex: nextIdx,
+    players,
+    currentPlayerIndex: nextActive.id,
     dice: resetDice(state.dice),
     turnTotal: 0,
     phase: 'roll',
-    log: [...state.log, `${state.players[state.currentPlayerIndex].name} quit.`],
+    log: [...state.log, quitMsg],
   }
 }
 

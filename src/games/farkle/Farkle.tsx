@@ -94,14 +94,19 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
       <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center gap-6">
         <div className="text-8xl">🏆</div>
         <h1 className="text-5xl font-extrabold text-yellow-400">{winner.name} Wins!</h1>
-        <p className="text-slate-400 text-xl">{winner.score.toLocaleString()} points</p>
+        {state.winByForfeit
+          ? <p className="text-slate-400 text-lg">Won by forfeit — all other players quit.</p>
+          : <p className="text-slate-400 text-xl">{winner.score.toLocaleString()} points</p>
+        }
         <div className="bg-slate-800 rounded-2xl p-4 border border-slate-700 w-full max-w-sm">
           <h2 className="text-slate-400 text-sm font-semibold uppercase tracking-wide mb-3">Final Scores</h2>
           {[...state.players]
             .sort((a, b) => b.score - a.score)
             .map((p) => (
-              <div key={p.id} className={`flex justify-between py-1 ${p.id === winner.id ? 'text-yellow-400 font-bold' : 'text-slate-300'}`}>
-                <span>{p.id === winner.id ? '🥇 ' : ''}{p.name}</span>
+              <div key={p.id} className={`flex justify-between py-1 ${
+                p.id === winner.id ? 'text-yellow-400 font-bold' : p.quit ? 'text-slate-600 line-through' : 'text-slate-300'
+              }`}>
+                <span>{p.id === winner.id ? '🥇 ' : p.quit ? '🚪 ' : ''}{p.name}</span>
                 <span>{p.score.toLocaleString()}</span>
               </div>
             ))}
