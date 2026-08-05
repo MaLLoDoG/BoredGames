@@ -131,7 +131,7 @@ export const GAMES: GameDefinition[] = [
     minPlayers: 2,
     maxPlayers: 6,
     category: 'card',
-    available: false,
+    available: true,
   },
   {
     id: 'cribbage',
