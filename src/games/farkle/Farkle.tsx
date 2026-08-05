@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import RulesModal from '../../components/RulesModal'
+import rules from './rules'
 import { useFarkle } from './useFarkle'
 import { getScoringCombos } from './engine'
 import { playDiceRoll, playBank, playFarkle, playNextPlayer, playWinner } from './sounds'
@@ -37,6 +39,7 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
   const prevPhase = useRef(state.phase)
   const [transitionVisible, setTransitionVisible] = useState(false)
   const [transitionPlayer, setTransitionPlayer] = useState(currentPlayer)
+  const [showRules, setShowRules] = useState(false)
 
   useEffect(() => {
     const playerChanged = state.currentPlayerIndex !== prevPlayerIndex.current
@@ -127,13 +130,22 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-extrabold text-yellow-400">🎲 Farkle</h1>
-        <button
-          onClick={onQuitToLobby}
-          className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
-        >
-          ← Lobby
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowRules(true)}
+            className="text-sm text-slate-400 hover:text-white transition-colors"
+          >
+            📖 Rules
+          </button>
+          <button
+            onClick={onQuitToLobby}
+            className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+          >
+            ← Lobby
+          </button>
+        </div>
       </div>
+      {showRules && <RulesModal rules={rules} onClose={() => setShowRules(false)} />}
 
       {/* Final round banner */}
       {inFinalRound && (

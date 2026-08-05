@@ -17,9 +17,10 @@ const CATEGORY_BADGE: Record<GameDefinition['category'], string> = {
 interface GameCardProps {
   game: GameDefinition
   onPlay: (id: GameDefinition['id']) => void
+  onRules?: (id: GameDefinition['id']) => void
 }
 
-export default function GameCard({ game, onPlay }: GameCardProps) {
+export default function GameCard({ game, onPlay, onRules }: GameCardProps) {
   const playerLabel =
     game.minPlayers === game.maxPlayers
       ? `${game.minPlayers} players`
@@ -48,12 +49,24 @@ export default function GameCard({ game, onPlay }: GameCardProps) {
         <span className="text-4xl" role="img" aria-label={game.name}>
           {game.emoji}
         </span>
-        <div>
+        <div className="flex-1 min-w-0">
           <h2 className="text-lg font-bold text-white leading-tight">{game.name}</h2>
           <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${CATEGORY_BADGE[game.category]}`}>
             {game.category}
           </span>
         </div>
+        {/* Rules info button — only shown when rules are available */}
+        {onRules && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onRules(game.id) }}
+            aria-label={`How to play ${game.name}`}
+            className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full
+              text-slate-400 border border-slate-600 hover:text-white hover:border-slate-400
+              transition-colors text-sm font-bold"
+          >
+            ?
+          </button>
+        )}
       </div>
 
       {/* Description */}

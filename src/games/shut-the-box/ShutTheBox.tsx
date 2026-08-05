@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import RulesModal from '../../components/RulesModal'
+import rules from './rules'
 import { useShutTheBox } from './useShutTheBox'
 import { validCombinations, openTiles, scoreTiles } from './engine'
 import type { TileNumber } from './engine'
@@ -15,6 +17,7 @@ interface ShutTheBoxProps {
 
 export default function ShutTheBox({ playerNames, onQuitToLobby }: ShutTheBoxProps) {
   const { state, roll, toggleTile, flip, advance } = useShutTheBox(playerNames)
+  const [showRules, setShowRules] = useState(false)
 
   const currentPlayer = state.players[state.currentPlayerIndex]
   const currentTiles = currentPlayer.tiles
@@ -89,10 +92,19 @@ export default function ShutTheBox({ playerNames, onQuitToLobby }: ShutTheBoxPro
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-extrabold text-yellow-400">📦 Shut the Box</h1>
-        <button onClick={onQuitToLobby} className="text-sm text-slate-500 hover:text-slate-300 transition-colors">
-          ← Lobby
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowRules(true)}
+            className="text-sm text-slate-400 hover:text-white transition-colors"
+          >
+            📖 Rules
+          </button>
+          <button onClick={onQuitToLobby} className="text-sm text-slate-500 hover:text-slate-300 transition-colors">
+            ← Lobby
+          </button>
+        </div>
       </div>
+      {showRules && <RulesModal rules={rules} onClose={() => setShowRules(false)} />}
 
       {/* Scoreboard */}
       <ScoreBoard players={state.players} currentPlayerIndex={state.currentPlayerIndex} />

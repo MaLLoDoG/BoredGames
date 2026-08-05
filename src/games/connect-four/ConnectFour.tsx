@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import RulesModal from '../../components/RulesModal'
+import rules from './rules'
 import { useConnectFour } from './useConnectFour'
 import { legalMoves, COLS, ROWS } from './engine'
 import GameLog from '../farkle/components/GameLog'
@@ -18,6 +20,7 @@ interface ConnectFourProps {
 export default function ConnectFour({ playerNames, onQuitToLobby }: ConnectFourProps) {
   const { state, drop, quit } = useConnectFour(playerNames[0], playerNames[1])
   const [hoverCol, setHoverCol] = useState<number | null>(null)
+  const [showRules, setShowRules] = useState(false)
 
   const legal = legalMoves(state.board)
   const canPlay = state.phase === 'playing'
@@ -79,10 +82,19 @@ export default function ConnectFour({ playerNames, onQuitToLobby }: ConnectFourP
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-extrabold text-yellow-400">🟡 Connect Four</h1>
-        <button onClick={onQuitToLobby} className="text-sm text-slate-500 hover:text-slate-300 transition-colors">
-          ← Lobby
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowRules(true)}
+            className="text-sm text-slate-400 hover:text-white transition-colors"
+          >
+            📖 Rules
+          </button>
+          <button onClick={onQuitToLobby} className="text-sm text-slate-500 hover:text-slate-300 transition-colors">
+            ← Lobby
+          </button>
+        </div>
       </div>
+      {showRules && <RulesModal rules={rules} onClose={() => setShowRules(false)} />}
 
       {/* Player indicators */}
       <div className="grid grid-cols-2 gap-3">

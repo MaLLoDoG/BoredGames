@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import RulesModal from '../../components/RulesModal'
+import rules from './rules'
 import { useGoFish } from './useGoFish'
 import HandoffScreen from './components/HandoffScreen'
 import AskPanel from './components/AskPanel'
@@ -30,6 +33,7 @@ const PLAYER_BG_COLORS = [
 export default function GoFish({ playerNames, onQuitToLobby }: GoFishProps) {
   const { state, ready, ask, continueTurn, endFishTurn, quit } = useGoFish(playerNames)
 
+  const [showRules, setShowRules] = useState(false)
   const { players, current, phase, lastAsk, pile, log } = state
   const activePlayer = players[current]
   const activeColor = PLAYER_TEXT_COLORS[current % PLAYER_TEXT_COLORS.length]
@@ -98,13 +102,22 @@ export default function GoFish({ playerNames, onQuitToLobby }: GoFishProps) {
           <span className="text-2xl">🐟</span>
           <span className="text-white font-bold">Go Fish</span>
         </div>
-        <button
-          onClick={() => quit(current)}
-          className="text-xs text-slate-500 hover:text-red-400 transition-colors px-2 py-1 rounded"
-        >
-          🚪 Quit
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowRules(true)}
+            className="text-sm text-slate-400 hover:text-white transition-colors"
+          >
+            📖 Rules
+          </button>
+          <button
+            onClick={() => quit(current)}
+            className="text-xs text-slate-500 hover:text-red-400 transition-colors px-2 py-1 rounded"
+          >
+            🚪 Quit
+          </button>
+        </div>
       </div>
+      {showRules && <RulesModal rules={rules} onClose={() => setShowRules(false)} />}
 
       {/* Scoreboard — all players' books */}
       <div className="bg-slate-800 rounded-2xl border border-slate-700 p-4 flex flex-col gap-3">

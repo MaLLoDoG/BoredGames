@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import GameCard from './GameCard'
+import RulesModal from './RulesModal'
 import { GAMES, CATEGORY_LABELS } from '../types/games'
+import { GAME_RULES } from '../types/gameRules'
 import type { GameDefinition } from '../types/games'
+import type { GameRules } from '../types/rules'
 
 type CategoryFilter = GameDefinition['category'] | 'all'
 
@@ -11,6 +14,7 @@ interface LobbyProps {
 
 export default function Lobby({ onPlay }: LobbyProps) {
   const [filter, setFilter] = useState<CategoryFilter>('all')
+  const [activeRules, setActiveRules] = useState<GameRules | null>(null)
 
   const categories: CategoryFilter[] = ['all', 'board', 'card', 'dice', 'puzzle']
 
@@ -56,7 +60,12 @@ export default function Lobby({ onPlay }: LobbyProps) {
       <main>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {visibleGames.map((game) => (
-            <GameCard key={game.id} game={game} onPlay={onPlay} />
+            <GameCard
+              key={game.id}
+              game={game}
+              onPlay={onPlay}
+              onRules={GAME_RULES[game.id] ? (id) => setActiveRules(GAME_RULES[id] ?? null) : undefined}
+            />
           ))}
         </div>
 
@@ -71,6 +80,11 @@ export default function Lobby({ onPlay }: LobbyProps) {
       <footer className="mt-auto pt-12 text-center text-slate-600 text-sm">
         All games are public domain rules. No AI opponents. Pass &amp; play only.
       </footer>
+
+      {/* Rules modal */}
+      {activeRules && (
+        <RulesModal rules={activeRules} onClose={() => setActiveRules(null)} />
+      )}
     </div>
   )
 }
