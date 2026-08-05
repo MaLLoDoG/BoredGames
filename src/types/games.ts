@@ -7,6 +7,14 @@ export type GameId =
   | 'farkle'
   | 'shut-the-box'
   | 'jigsaw'
+  | 'yacht'
+  | 'solitaire'
+  | 'connect-four'
+  | 'gin-rummy'
+  | 'mancala'
+  | 'hearts'
+  | 'spades'
+  | 'battleship'
 
 export interface GameDefinition {
   id: GameId
@@ -20,6 +28,7 @@ export interface GameDefinition {
 }
 
 export const GAMES: GameDefinition[] = [
+  // ── Dice ────────────────────────────────────────────────────────────────────
   {
     id: 'farkle',
     name: 'Farkle',
@@ -40,6 +49,18 @@ export const GAMES: GameDefinition[] = [
     category: 'dice',
     available: false,
   },
+  {
+    id: 'yacht',
+    name: 'Yacht',
+    emoji: '⚀',
+    description: 'Roll 5 dice up to three times and fill your scorecard. The public domain original behind Yahtzee.',
+    minPlayers: 2,
+    maxPlayers: 6,
+    category: 'dice',
+    available: false,
+  },
+
+  // ── Board ────────────────────────────────────────────────────────────────────
   {
     id: 'checkers',
     name: 'Checkers',
@@ -71,6 +92,38 @@ export const GAMES: GameDefinition[] = [
     available: false,
   },
   {
+    id: 'connect-four',
+    name: 'Connect Four',
+    emoji: '🟡',
+    description: 'Drop colored discs and be the first to connect four in a row.',
+    minPlayers: 2,
+    maxPlayers: 2,
+    category: 'board',
+    available: false,
+  },
+  {
+    id: 'mancala',
+    name: 'Mancala',
+    emoji: '🪨',
+    description: 'Scoop and sow stones around the board. Capture the most to win.',
+    minPlayers: 2,
+    maxPlayers: 2,
+    category: 'board',
+    available: false,
+  },
+  {
+    id: 'battleship',
+    name: 'Battleship',
+    emoji: '🚢',
+    description: 'Hide your fleet and hunt your opponent\'s ships on a hidden grid.',
+    minPlayers: 2,
+    maxPlayers: 2,
+    category: 'board',
+    available: false,
+  },
+
+  // ── Card ─────────────────────────────────────────────────────────────────────
+  {
     id: 'go-fish',
     name: 'Go Fish',
     emoji: '🐟',
@@ -91,12 +144,54 @@ export const GAMES: GameDefinition[] = [
     available: false,
   },
   {
+    id: 'gin-rummy',
+    name: 'Gin Rummy',
+    emoji: '🥃',
+    description: 'Draw and discard to form runs and sets. Knock when you\'re ready.',
+    minPlayers: 2,
+    maxPlayers: 4,
+    category: 'card',
+    available: false,
+  },
+  {
+    id: 'hearts',
+    name: 'Hearts',
+    emoji: '♥️',
+    description: 'Avoid taking hearts and the queen of spades in this trick-taking classic.',
+    minPlayers: 4,
+    maxPlayers: 4,
+    category: 'card',
+    available: false,
+  },
+  {
+    id: 'spades',
+    name: 'Spades',
+    emoji: '♠️',
+    description: 'Bid your tricks and make your contract. Spades are always trump.',
+    minPlayers: 4,
+    maxPlayers: 4,
+    category: 'card',
+    available: false,
+  },
+
+  // ── Puzzle ───────────────────────────────────────────────────────────────────
+  {
     id: 'jigsaw',
     name: 'Jigsaw Puzzle',
     emoji: '🧩',
     description: 'Drag and drop pieces together. Relaxing solo or co-op fun.',
     minPlayers: 1,
     maxPlayers: 4,
+    category: 'puzzle',
+    available: false,
+  },
+  {
+    id: 'solitaire',
+    name: 'Solitaire',
+    emoji: '🂡',
+    description: 'The classic Klondike card game. Move all cards to the foundations.',
+    minPlayers: 1,
+    maxPlayers: 1,
     category: 'puzzle',
     available: false,
   },
