@@ -38,6 +38,7 @@ export interface GoFishState {
     received: Card[]       // cards handed over (empty = go fish)
     drawnCard: Card | null // card drawn from pile (null = pile was empty)
     luckyFish: boolean     // drawn card matched the asked rank
+    newBooks: Rank[]       // books completed as a direct result of this ask/draw
   } | null
   log: string[]
 }
@@ -196,7 +197,7 @@ export function actionAsk(
       players,
       pile,
       phase: 'result-got',
-      lastAsk: { targetIndex, rank, received, drawnCard: null, luckyFish: false },
+      lastAsk: { targetIndex, rank, received, drawnCard: null, luckyFish: false, newBooks },
       log,
     }
   }
@@ -227,7 +228,7 @@ export function actionAsk(
     players,
     pile,
     phase: 'result-fish',
-    lastAsk: { targetIndex, rank, received: [], drawnCard, luckyFish },
+    lastAsk: { targetIndex, rank, received: [], drawnCard, luckyFish, newBooks },
     log,
   }
 }

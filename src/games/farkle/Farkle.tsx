@@ -65,16 +65,16 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
   }, [state.phase])
 
   // ── Sounds — reactive on state, not on button press ────────────────────────
-  // Watch phase transitions so sounds fire exactly when the game event occurs,
-  // not when the button is clicked (which may be a frame before state updates).
+  // Track previous phase so we only fire when *entering* a phase, never on mount
+  // or on unrelated re-renders.
+  const prevSoundPhase = useRef<string>('')
   useEffect(() => {
-    if (state.phase === 'select' || state.phase === 'farkle') {
-      // Phase enters 'select' only after a real dice roll
-      // Phase enters 'farkle' only after a real dice roll with no scoring dice
-      if (state.phase === 'select') playDiceRoll()
-      if (state.phase === 'farkle') { playDiceRoll(); setTimeout(playFarkle, 380) }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    const prev = prevSoundPhase.current
+    const cur = state.phase
+    prevSoundPhase.current = cur
+    if (cur === prev) return          // no transition — skip
+    if (cur === 'select') playDiceRoll()
+    if (cur === 'farkle') { playDiceRoll(); setTimeout(playFarkle, 380) }
   }, [state.phase])
 
   // ── Action handlers (no sounds here — sounds are reactive above) ───────────

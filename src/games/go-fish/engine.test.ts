@@ -347,7 +347,7 @@ describe('§5 actionContinueTurn', () => {
       pile: [],
       current: 0,
       phase: 'result-got',
-      lastAsk: { targetIndex: 1, rank: 'A', received: [card('A', '♥')], drawnCard: null, luckyFish: false },
+      lastAsk: { targetIndex: 1, rank: 'A', received: [card('A', '♥')], drawnCard: null, luckyFish: false, newBooks: [] },
       log: [],
     }
     const next = actionContinueTurn(state)
@@ -378,7 +378,7 @@ describe('§5 actionContinueTurn', () => {
       pile: [card('5', '♠')],
       current: 0,
       phase: 'result-got',
-      lastAsk: { targetIndex: 1, rank: 'A', received: [], drawnCard: null, luckyFish: false },
+      lastAsk: { targetIndex: 1, rank: 'A', received: [], drawnCard: null, luckyFish: false, newBooks: [] },
       log: [],
     }
     const next = actionContinueTurn(state)
@@ -399,7 +399,7 @@ describe('§5 actionEndFishTurn', () => {
       pile: [],
       current: 0,
       phase: 'result-fish',
-      lastAsk: { targetIndex: 1, rank: 'A', received: [], drawnCard: card('2', '♠'), luckyFish },
+      lastAsk: { targetIndex: 1, rank: 'A', received: [], drawnCard: card('2', '♠'), luckyFish, newBooks: [] },
       log: [],
     }
   }
@@ -430,7 +430,7 @@ describe('§5 actionEndFishTurn', () => {
       pile: [],
       current: 1,
       phase: 'result-fish',
-      lastAsk: { targetIndex: 0, rank: 'K', received: [], drawnCard: null, luckyFish: false },
+      lastAsk: { targetIndex: 0, rank: 'K', received: [], drawnCard: null, luckyFish: false, newBooks: [] },
       log: [],
     }
     const next = actionEndFishTurn(state)

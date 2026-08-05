@@ -161,9 +161,9 @@ export default function GoFish({ playerNames, onQuitToLobby }: GoFishProps) {
             {players[lastAsk.targetIndex].name} had {lastAsk.received.length} <strong className="text-white">{lastAsk.rank}</strong>
             {lastAsk.received.length !== 1 ? 's' : ''}.
           </p>
-          {players[current].books.length > 0 && (
+          {lastAsk.newBooks.length > 0 && (
             <p className="text-yellow-400 font-bold text-sm">
-              📚 You completed a book of {lastAsk.rank}s!
+              📚 Book{lastAsk.newBooks.length > 1 ? 's' : ''} completed: {lastAsk.newBooks.join(', ')}!
             </p>
           )}
           <p className="text-slate-400 text-sm italic">You get another turn!</p>
