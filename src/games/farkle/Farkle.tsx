@@ -61,32 +61,24 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
     }
   }, [state.phase])
 
-  // ── Action handlers with sounds ────────────────────────────────────────────
-  const handleRoll = useCallback(() => {
-    playDiceRoll()
-    roll()
-  }, [roll])
-
-  const handleRollAgain = useCallback(() => {
-    playDiceRoll()
-    rollAgain()
-  }, [rollAgain])
-
-  const handleBank = useCallback(() => {
-    playBank()
-    bank()
-  }, [bank])
-
-  const handleAcknowledgeFarkle = useCallback(() => {
-    acknowledgeFarkle()
-  }, [acknowledgeFarkle])
-
-  // Farkle sound — fires when phase enters 'farkle'
+  // ── Sounds — reactive on state, not on button press ────────────────────────
+  // Watch phase transitions so sounds fire exactly when the game event occurs,
+  // not when the button is clicked (which may be a frame before state updates).
   useEffect(() => {
-    if (state.phase === 'farkle') {
-      playFarkle()
+    if (state.phase === 'select' || state.phase === 'farkle') {
+      // Phase enters 'select' only after a real dice roll
+      // Phase enters 'farkle' only after a real dice roll with no scoring dice
+      if (state.phase === 'select') playDiceRoll()
+      if (state.phase === 'farkle') { playDiceRoll(); setTimeout(playFarkle, 380) }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.phase])
+
+  // ── Action handlers (no sounds here — sounds are reactive above) ───────────
+  const handleRoll = useCallback(() => { roll() }, [roll])
+  const handleRollAgain = useCallback(() => { rollAgain() }, [rollAgain])
+  const handleBank = useCallback(() => { playBank(); bank() }, [bank])
+  const handleAcknowledgeFarkle = useCallback(() => { acknowledgeFarkle() }, [acknowledgeFarkle])
 
   function handleQuit() {
     quit()
