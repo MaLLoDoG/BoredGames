@@ -49,35 +49,40 @@ export default function ActionBar({
       {/* §13 — Decide phase: at least one die held */}
       {phase === 'decide' && (
         <>
-          {hasHeldDice && (
-            <button
-              onClick={onConfirmSetAside}
-              className="px-5 py-2.5 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-400 active:scale-95 transition-all"
-            >
-              ✔ Confirm Selection
-            </button>
+          {/* Must confirm selection before rolling again or banking */}
+          {hasHeldDice ? (
+            <>
+              <button
+                onClick={onConfirmSetAside}
+                className="px-5 py-2.5 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-400 active:scale-95 transition-all"
+              >
+                ✔ Confirm Selection
+              </button>
+              <p className="w-full text-center text-slate-500 text-xs italic">
+                Confirm your selected dice first, then choose to roll again or bank.
+              </p>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={onRollAgain}
+                className="px-5 py-2.5 font-semibold rounded-xl transition-all active:scale-95 bg-green-600 text-white hover:bg-green-500"
+              >
+                🎲 Roll Again
+              </button>
+              <button
+                onClick={onBank}
+                disabled={!canBank}
+                title={!canBank ? 'Need 500 pts to get on the board' : ''}
+                className={`px-5 py-2.5 font-semibold rounded-xl transition-all active:scale-95
+                  ${!canBank
+                    ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
+                    : 'bg-emerald-500 text-white hover:bg-emerald-400'}`}
+              >
+                🏦 Bank {turnTotal > 0 ? `(${turnTotal.toLocaleString()})` : ''}
+              </button>
+            </>
           )}
-          <button
-            onClick={onRollAgain}
-            disabled={hasHeldDice}
-            className={`px-5 py-2.5 font-semibold rounded-xl transition-all active:scale-95
-              ${hasHeldDice
-                ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
-                : 'bg-green-600 text-white hover:bg-green-500'}`}
-          >
-            🎲 Roll Again
-          </button>
-          <button
-            onClick={onBank}
-            disabled={!canBank || hasHeldDice}
-            title={!canBank ? 'Need 500 pts to get on the board' : ''}
-            className={`px-5 py-2.5 font-semibold rounded-xl transition-all active:scale-95
-              ${!canBank || hasHeldDice
-                ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
-                : 'bg-emerald-500 text-white hover:bg-emerald-400'}`}
-          >
-            🏦 Bank {turnTotal > 0 ? `(${turnTotal.toLocaleString()})` : ''}
-          </button>
         </>
       )}
 

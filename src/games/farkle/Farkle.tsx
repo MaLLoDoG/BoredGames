@@ -15,6 +15,7 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
     state,
     roll,
     toggleHold,
+    confirmSetAside,
     bank,
     rollAgain,
     acknowledgeFarkle,
@@ -138,7 +139,7 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
         onRoll={roll}
         onBank={bank}
         onRollAgain={rollAgain}
-        onConfirmSetAside={() => {}} // toggleHold + decide phase handles this
+        onConfirmSetAside={confirmSetAside}
         onAcknowledgeFarkle={acknowledgeFarkle}
         onQuit={handleQuit}
       />
