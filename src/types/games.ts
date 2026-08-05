@@ -47,7 +47,7 @@ export const GAMES: GameDefinition[] = [
     minPlayers: 1,
     maxPlayers: 4,
     category: 'dice',
-    available: false,
+    available: true,
   },
   {
     id: 'yacht',

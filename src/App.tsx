@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import Lobby from './components/Lobby'
 import Farkle from './games/farkle/Farkle'
+import ShutTheBox from './games/shut-the-box/ShutTheBox'
 import type { GameId } from './types/games'
 
 type AppView =
   | { screen: 'lobby' }
   | { screen: 'setup'; gameId: GameId }
   | { screen: 'farkle'; playerNames: string[] }
+  | { screen: 'shut-the-box'; playerNames: string[] }
 
 const PLAYER_COUNT_RANGE: Partial<Record<GameId, [number, number]>> = {
   'farkle': [2, 6],
+  'shut-the-box': [1, 4],
 }
 
 export default function App() {
@@ -29,6 +32,7 @@ export default function App() {
         gameId={view.gameId}
         onStart={(names) => {
           if (view.gameId === 'farkle') setView({ screen: 'farkle', playerNames: names })
+          else if (view.gameId === 'shut-the-box') setView({ screen: 'shut-the-box', playerNames: names })
           else setView({ screen: 'lobby' })
         }}
         onBack={() => setView({ screen: 'lobby' })}
@@ -39,6 +43,15 @@ export default function App() {
   if (view.screen === 'farkle') {
     return (
       <Farkle
+        playerNames={view.playerNames}
+        onQuitToLobby={() => setView({ screen: 'lobby' })}
+      />
+    )
+  }
+
+  if (view.screen === 'shut-the-box') {
+    return (
+      <ShutTheBox
         playerNames={view.playerNames}
         onQuitToLobby={() => setView({ screen: 'lobby' })}
       />
