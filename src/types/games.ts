@@ -99,7 +99,7 @@ export const GAMES: GameDefinition[] = [
     minPlayers: 2,
     maxPlayers: 2,
     category: 'board',
-    available: false,
+    available: true,
   },
   {
     id: 'mancala',
