@@ -1,9 +1,12 @@
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useFarkle } from './useFarkle'
 import { getScoringCombos } from './engine'
+import { playDiceRoll, playBank, playFarkle, playNextPlayer, playWinner } from './sounds'
 import DiceRoller from './components/DiceRoller'
 import ScoreBoard from './components/ScoreBoard'
 import GameLog from './components/GameLog'
 import ActionBar from './components/ActionBar'
+import PlayerTransition from './components/PlayerTransition'
 
 interface FarkleProps {
   playerNames: string[]
@@ -27,16 +30,69 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
   const canSelect = state.phase === 'select' || state.phase === 'decide'
   const combos = canSelect ? getScoringCombos(state.dice) : []
   const availablePoints = combos.reduce((sum, c) => sum + c.points, 0)
-
-  // §14 — show final round banner
   const inFinalRound = state.finalRoundTriggeredBy !== null && state.phase !== 'game-over'
+
+  // ── Player transition overlay ──────────────────────────────────────────────
+  const prevPlayerIndex = useRef(state.currentPlayerIndex)
+  const prevPhase = useRef(state.phase)
+  const [transitionVisible, setTransitionVisible] = useState(false)
+  const [transitionPlayer, setTransitionPlayer] = useState(currentPlayer)
+
+  useEffect(() => {
+    const playerChanged = state.currentPlayerIndex !== prevPlayerIndex.current
+    const gameJustStarted = prevPhase.current === 'roll' && prevPlayerIndex.current === 0 && state.log.length === 0
+
+    if (playerChanged && !gameJustStarted && state.phase !== 'game-over') {
+      setTransitionPlayer(state.players[state.currentPlayerIndex])
+      setTransitionVisible(true)
+      playNextPlayer()
+    }
+
+    prevPlayerIndex.current = state.currentPlayerIndex
+    prevPhase.current = state.phase
+  }, [state.currentPlayerIndex, state.phase, state.players, state.log.length])
+
+  // ── Winner sound ───────────────────────────────────────────────────────────
+  const winnerSoundPlayed = useRef(false)
+  useEffect(() => {
+    if (state.phase === 'game-over' && !winnerSoundPlayed.current) {
+      winnerSoundPlayed.current = true
+      playWinner()
+    }
+  }, [state.phase])
+
+  // ── Action handlers with sounds ────────────────────────────────────────────
+  const handleRoll = useCallback(() => {
+    playDiceRoll()
+    roll()
+  }, [roll])
+
+  const handleRollAgain = useCallback(() => {
+    playDiceRoll()
+    rollAgain()
+  }, [rollAgain])
+
+  const handleBank = useCallback(() => {
+    playBank()
+    bank()
+  }, [bank])
+
+  const handleAcknowledgeFarkle = useCallback(() => {
+    acknowledgeFarkle()
+  }, [acknowledgeFarkle])
+
+  // Farkle sound — fires when phase enters 'farkle'
+  useEffect(() => {
+    if (state.phase === 'farkle') {
+      playFarkle()
+    }
+  }, [state.phase])
 
   function handleQuit() {
     quit()
-    // If only 2 players, quitting ends the game — handled by engine
   }
 
-  // Game Over screen
+  // ── Game Over screen ───────────────────────────────────────────────────────
   if (state.phase === 'game-over' && state.winner !== null) {
     const winner = state.players.find((p) => p.id === state.winner)!
     return (
@@ -67,6 +123,14 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
 
   return (
     <div className="min-h-screen flex flex-col p-4 max-w-3xl mx-auto w-full gap-4">
+
+      {/* Player turn transition overlay */}
+      <PlayerTransition
+        playerName={transitionPlayer.name}
+        playerIndex={transitionPlayer.id}
+        visible={transitionVisible}
+        onDone={() => setTransitionVisible(false)}
+      />
 
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -136,11 +200,11 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
         currentPlayer={currentPlayer}
         turnTotal={state.turnTotal}
         hasHeldDice={hasHeldDice}
-        onRoll={roll}
-        onBank={bank}
-        onRollAgain={rollAgain}
+        onRoll={handleRoll}
+        onBank={handleBank}
+        onRollAgain={handleRollAgain}
         onConfirmSetAside={confirmSetAside}
-        onAcknowledgeFarkle={acknowledgeFarkle}
+        onAcknowledgeFarkle={handleAcknowledgeFarkle}
         onQuit={handleQuit}
       />
 
