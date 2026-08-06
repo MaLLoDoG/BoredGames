@@ -79,7 +79,7 @@ export default function Yacht({ playerNames, onQuitToLobby }: YachtProps) {
 
   // ── Main game screen — fixed to viewport, no page scroll ───────────────────
   return (
-    <div className="h-screen overflow-hidden flex flex-col p-3 gap-2">
+    <div className="h-screen overflow-hidden flex flex-col p-3 gap-2 max-w-3xl mx-auto">
       {showRules && <RulesModal rules={rules} onClose={() => setShowRules(false)} />}
 
       {/* Header — 1 line */}
