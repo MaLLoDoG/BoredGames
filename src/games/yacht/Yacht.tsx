@@ -77,115 +77,80 @@ export default function Yacht({ playerNames, onQuitToLobby }: YachtProps) {
     )
   }
 
-  // ── Main game screen ────────────────────────────────────────────────────────
+  // ── Main game screen — fixed to viewport, no page scroll ───────────────────
   return (
-    <div className="min-h-screen flex flex-col p-4 gap-3 max-w-5xl mx-auto w-full">
-
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold text-yellow-400">⚀ Yacht</h1>
-        <div className="flex items-center gap-3">
-          <button onClick={() => setShowRules(true)} className="text-sm text-slate-400 hover:text-white transition-colors">
-            📖 Rules
-          </button>
-          <button onClick={onQuitToLobby} className="text-sm text-slate-500 hover:text-slate-300 transition-colors">
-            ← Lobby
-          </button>
-        </div>
-      </div>
+    <div className="h-screen overflow-hidden flex flex-col p-3 gap-2">
       {showRules && <RulesModal rules={rules} onClose={() => setShowRules(false)} />}
 
-      {/* Round + turn banner */}
-      <div className="flex items-center justify-between">
-        <div className={`rounded-xl border px-4 py-2 flex items-center gap-2 ${PLAYER_BG[current % PLAYER_BG.length]}`}>
-          <span className={`font-extrabold text-lg ${PLAYER_COLORS[current % PLAYER_COLORS.length]}`}>
-            {activePlayer.name}
-          </span>
-          <span className="text-slate-400 text-sm">— your turn</span>
+      {/* Header — 1 line */}
+      <div className="flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-extrabold text-yellow-400">⚀ Yacht</h1>
+          <div className={`rounded-lg border px-3 py-1 flex items-center gap-2 ${PLAYER_BG[current % PLAYER_BG.length]}`}>
+            <span className={`font-bold text-sm ${PLAYER_COLORS[current % PLAYER_COLORS.length]}`}>{activePlayer.name}</span>
+            <span className="text-slate-500 text-xs">· Round {round}/12</span>
+          </div>
         </div>
-        <div className="text-slate-400 text-sm font-semibold">
-          Round {round} / 12
+        <div className="flex items-center gap-3">
+          <button onClick={() => setShowRules(true)} className="text-sm text-slate-400 hover:text-white transition-colors">📖 Rules</button>
+          <button onClick={onQuitToLobby} className="text-sm text-slate-500 hover:text-slate-300 transition-colors">← Lobby</button>
         </div>
       </div>
 
-      {/* ── Two-column body ────────────────────────────────────────────────── */}
-      <div className="flex flex-col lg:flex-row gap-4 flex-1">
+      {/* Body — fills remaining height, never overflows */}
+      <div className="flex gap-4 flex-1 min-h-0">
 
-        {/* LEFT — Dice panel + log */}
-        <div className="flex flex-col gap-3 lg:w-72 shrink-0">
+        {/* LEFT — dice + log. w-96 = 384px, plenty for 5 × w-16 dice + gaps */}
+        <div className="flex flex-col gap-3 w-96 shrink-0">
 
-          {/* Dice area */}
-          <div className="bg-slate-800 rounded-2xl border border-slate-700 p-4 flex flex-col gap-4">
-
+          <div className="bg-slate-800 rounded-2xl border border-slate-700 p-4 flex flex-col gap-4 shrink-0">
             {/* Roll pips + hint */}
             <div className="flex items-center justify-between">
               <div className="flex gap-1.5">
                 {[3, 2, 1].map(r => (
-                  <span
-                    key={r}
-                    className={`w-2.5 h-2.5 rounded-full transition-colors ${
-                      rollsLeft < r ? 'bg-yellow-400' : 'bg-slate-600'
-                    }`}
-                  />
+                  <span key={r} className={`w-2.5 h-2.5 rounded-full transition-colors ${rollsLeft < r ? 'bg-yellow-400' : 'bg-slate-600'}`} />
                 ))}
               </div>
-              <span className="text-slate-400 text-xs text-right leading-tight">
-                {phase === 'scoring' || rollsLeft === 0
-                  ? 'Pick a category →'
-                  : rollsLeft === 3
-                  ? 'Roll to start'
-                  : `${rollsLeft} roll${rollsLeft !== 1 ? 's' : ''} left`
-                }
+              <span className="text-slate-400 text-xs">
+                {phase === 'scoring' || rollsLeft === 0 ? 'Pick a category →'
+                  : rollsLeft === 3 ? 'Roll to start'
+                  : `${rollsLeft} roll${rollsLeft !== 1 ? 's' : ''} left — tap to hold`}
               </span>
             </div>
 
-            {/* Dice — 2×3 grid so they never overflow */}
-            <div className="grid grid-cols-5 gap-2 justify-items-center">
+            {/* Full-size dice row, evenly spaced */}
+            <div className="flex justify-around py-2">
               {dice.map(die => (
-                <Die
-                  key={die.id}
-                  die={die}
-                  canHold={canHold}
-                  onToggle={() => toggleHold(die.id)}
-                />
+                <Die key={die.id} die={die} canHold={canHold} onToggle={() => toggleHold(die.id)} />
               ))}
             </div>
 
-            {/* Roll / Score now buttons */}
+            {/* Buttons */}
             <div className="flex gap-2">
-              <button
-                onClick={roll}
-                disabled={!canRoll}
-                className="flex-1 py-2.5 rounded-xl bg-yellow-400 text-slate-900 font-extrabold
-                  hover:bg-yellow-300 disabled:opacity-30 disabled:cursor-not-allowed
-                  transition-all hover:scale-[1.01] active:scale-[0.99] text-sm"
-              >
-                {!hasRolled ? '🎲 Roll!' : rollsLeft > 0 ? `🎲 Roll Again` : '🎲 No Rolls Left'}
+              <button onClick={roll} disabled={!canRoll}
+                className="flex-1 py-2.5 rounded-xl bg-yellow-400 text-slate-900 font-extrabold text-sm
+                  hover:bg-yellow-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                {!hasRolled ? '🎲 Roll!' : rollsLeft > 0 ? '🎲 Roll Again' : '🎲 No Rolls Left'}
               </button>
               {hasRolled && phase === 'rolling' && rollsLeft > 0 && (
-                <button
-                  onClick={scoreNow}
+                <button onClick={scoreNow}
                   className="px-3 py-2.5 rounded-xl bg-slate-700 text-slate-300 font-semibold text-xs
-                    hover:bg-slate-600 transition-all whitespace-nowrap"
-                >
+                    hover:bg-slate-600 transition-all whitespace-nowrap">
                   Score Now
                 </button>
               )}
             </div>
           </div>
 
-          {/* Log — stays below dice on the left */}
-          <GameLog entries={log} />
+          {/* Log — fills remaining left height, scrolls internally only */}
+          <div className="flex-1 min-h-0 overflow-hidden rounded-xl">
+            <GameLog entries={log} />
+          </div>
         </div>
 
-        {/* RIGHT — Scorecard (scrolls independently if needed) */}
-        <div className="flex-1 min-w-0">
-          <ScoreCard
-            players={players}
-            activeDice={dice}
-            phase={phase}
-            onScore={score}
-          />
+        {/* RIGHT — scorecard: max-w-sm keeps it from ballooning; scrolls internally */}
+        <div className="max-w-sm w-full overflow-y-auto min-h-0">
+          <ScoreCard players={players} activeDice={dice} phase={phase} onScore={score} />
         </div>
 
       </div>

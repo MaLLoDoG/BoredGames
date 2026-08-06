@@ -36,23 +36,23 @@ function CategoryRow({
   const potential = scoreFor(activeDice, category)
 
   return (
-    <tr className="border-b border-slate-700 last:border-0">
-      <td className="py-1.5 pr-3 text-slate-300 text-sm whitespace-nowrap">
+    <tr className="border-b border-slate-700/50 last:border-0">
+      <td className="py-1 pr-2 text-slate-300 text-xs whitespace-nowrap">
         {CATEGORY_LABELS[category]}
       </td>
       {players.map((p, i) => {
         const scored = p.scoreCard[category]
         const isActive = canScore && scored === null
         return (
-          <td key={p.id} className="py-1.5 text-center w-14">
+          <td key={p.id} className="py-1 text-center w-12">
             {scored !== null ? (
-              <span className={`text-sm font-semibold ${PLAYER_COLORS[i % PLAYER_COLORS.length]}`}>
+              <span className={`text-xs font-semibold ${PLAYER_COLORS[i % PLAYER_COLORS.length]}`}>
                 {scored}
               </span>
             ) : isActive ? (
               <button
                 onClick={() => onScore?.(category)}
-                className="w-10 h-7 rounded-lg bg-slate-700 hover:bg-yellow-400 hover:text-slate-900
+                className="w-9 h-6 rounded-md bg-slate-700 hover:bg-yellow-400 hover:text-slate-900
                   text-yellow-300 text-xs font-bold transition-all duration-150 border border-slate-600
                   hover:border-yellow-400 hover:scale-105"
               >
@@ -76,7 +76,7 @@ export default function ScoreCard({ players, activeDice, phase, onScore }: Score
       <tr>
         <td
           colSpan={players.length + 1}
-          className="pt-3 pb-1 text-xs font-bold uppercase tracking-widest text-slate-500"
+          className="pt-2 pb-0.5 text-xs font-bold uppercase tracking-widest text-slate-500"
         >
           {label}
         </td>
@@ -89,11 +89,11 @@ export default function ScoreCard({ players, activeDice, phase, onScore }: Score
       <table className="w-full px-4">
         <thead>
           <tr className="border-b border-slate-600">
-            <th className="py-2 px-4 text-left text-xs text-slate-500 font-semibold uppercase tracking-wide">
+            <th className="py-1.5 px-3 text-left text-xs text-slate-500 font-semibold uppercase tracking-wide">
               Category
             </th>
             {players.map((p, i) => (
-              <th key={p.id} className={`py-2 text-center text-xs font-bold uppercase tracking-wide ${PLAYER_COLORS[i % PLAYER_COLORS.length]}`}>
+              <th key={p.id} className={`py-1.5 text-center text-xs font-bold uppercase tracking-wide ${PLAYER_COLORS[i % PLAYER_COLORS.length]}`}>
                 {p.name}
               </th>
             ))}
@@ -113,12 +113,12 @@ export default function ScoreCard({ players, activeDice, phase, onScore }: Score
           ))}
           {/* Upper totals */}
           <tr className="border-t border-slate-600">
-            <td className="py-1.5 pr-3 text-slate-500 text-xs italic">Upper total</td>
+            <td className="py-1 pr-2 text-slate-500 text-xs italic">Upper total</td>
             {players.map((p, i) => {
               const total = (['ones','twos','threes','fours','fives','sixes'] as Category[])
                 .reduce((s, c) => s + (p.scoreCard[c] ?? 0), 0)
               return (
-                <td key={p.id} className={`py-1.5 text-center text-xs font-semibold ${PLAYER_COLORS[i % PLAYER_COLORS.length]}`}>
+                <td key={p.id} className={`py-1 text-center text-xs font-semibold ${PLAYER_COLORS[i % PLAYER_COLORS.length]}`}>
                   {total}
                 </td>
               )
@@ -140,11 +140,11 @@ export default function ScoreCard({ players, activeDice, phase, onScore }: Score
         {/* Grand total */}
         <tfoot>
           <tr className="border-t-2 border-slate-600 bg-slate-900/50">
-            <td className="py-2 px-4 text-slate-300 text-sm font-bold">Total</td>
+            <td className="py-1.5 px-3 text-slate-300 text-xs font-bold">Total</td>
             {players.map((p, i) => {
               const total = CATEGORIES.reduce((s, c) => s + (p.scoreCard[c] ?? 0), 0)
               return (
-                <td key={p.id} className={`py-2 text-center text-sm font-extrabold ${PLAYER_COLORS[i % PLAYER_COLORS.length]}`}>
+                <td key={p.id} className={`py-1.5 text-center text-sm font-extrabold ${PLAYER_COLORS[i % PLAYER_COLORS.length]}`}>
                   {total}
                 </td>
               )
