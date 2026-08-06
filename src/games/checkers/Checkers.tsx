@@ -87,15 +87,27 @@ export function Checkers({ players, onQuit }: CheckersProps) {
       </div>
 
       {/* Status bar */}
-      <div className="px-4 py-2 bg-amber-800 text-amber-50 text-center text-sm font-medium">
-        {phase === 'game-over' ? (
-          winner === 'draw'
-            ? `Draw${state.drawReason ? ` (${state.drawReason})` : ''}!`
-            : `🏆 ${playerName(winner!)} wins!`
-        ) : phase === 'chain' ? (
-          `${currentName} — keep jumping!`
-        ) : (
-          `${currentName}'s turn`
+      <div className="px-4 py-2 bg-amber-800 text-amber-50 text-center text-sm font-medium flex items-center justify-center gap-3">
+        <span>
+          {phase === 'game-over' ? (
+            winner === 'draw'
+              ? `Draw${state.drawReason ? ` (${state.drawReason})` : ''}!`
+              : `🏆 ${playerName(winner!)} wins!`
+          ) : phase === 'chain' ? (
+            `${currentName} — keep jumping!`
+          ) : phase === 'move' ? (
+            `${currentName} — pick a destination`
+          ) : (
+            `${currentName}'s turn — pick a piece`
+          )}
+        </span>
+        {phase === 'move' && (
+          <button
+            onClick={deselect}
+            className="text-xs px-2 py-0.5 rounded bg-amber-600 hover:bg-amber-500 text-white"
+          >
+            ✕ Cancel
+          </button>
         )}
       </div>
 
