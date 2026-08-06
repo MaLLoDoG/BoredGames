@@ -21,15 +21,17 @@ export default function Die({ die, onToggle, canHold }: DieProps) {
 
   const baseClass = 'relative w-16 h-16 rounded-xl border-2 transition-all duration-150 select-none'
   let colorClass = ''
-  if (held) {
+  // Only show held styling while holding is actually allowed
+  if (held && canHold) {
     colorClass = 'bg-yellow-400 border-yellow-300 scale-110 shadow-lg shadow-yellow-400/50 cursor-pointer'
   } else if (canHold) {
     colorClass = 'bg-white border-slate-300 hover:border-yellow-400 hover:scale-105 cursor-pointer'
   } else {
-    colorClass = 'bg-slate-700 border-slate-600 cursor-default opacity-60'
+    // After roll 3 or in scoring — show all dice as plain, equal, unclickable
+    colorClass = 'bg-white border-slate-300 cursor-default'
   }
 
-  const dotColor = held ? 'bg-slate-900' : 'bg-slate-800'
+  const dotColor = (held && canHold) ? 'bg-slate-900' : 'bg-slate-800'
 
   return (
     <button
@@ -45,7 +47,7 @@ export default function Die({ die, onToggle, canHold }: DieProps) {
           style={{ left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)' }}
         />
       ))}
-      {held && (
+      {held && canHold && (
         <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-yellow-400 uppercase tracking-widest whitespace-nowrap">
           held
         </span>

@@ -17,11 +17,11 @@ type AppView =
   | { screen: 'yacht'; playerNames: string[] }
 
 const PLAYER_COUNT_RANGE: Partial<Record<GameId, [number, number]>> = {
-  'farkle': [2, 6],
+  'farkle': [1, 6],
   'shut-the-box': [1, 4],
   'connect-four': [2, 2],
   'go-fish': [2, 6],
-  'yacht': [2, 6],
+  'yacht': [1, 6],
 }
 
 export default function App() {

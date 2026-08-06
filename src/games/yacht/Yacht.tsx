@@ -13,21 +13,14 @@ interface YachtProps {
 }
 
 const PLAYER_COLORS = [
-  'text-yellow-400',
-  'text-blue-400',
-  'text-green-400',
-  'text-purple-400',
-  'text-red-400',
-  'text-indigo-400',
+  'text-yellow-400', 'text-blue-400', 'text-green-400',
+  'text-purple-400', 'text-red-400',  'text-indigo-400',
 ]
 
 const PLAYER_BG = [
-  'bg-yellow-500/20 border-yellow-500/40',
-  'bg-blue-500/20 border-blue-500/40',
-  'bg-green-500/20 border-green-500/40',
-  'bg-purple-500/20 border-purple-500/40',
-  'bg-red-500/20 border-red-500/40',
-  'bg-indigo-500/20 border-indigo-500/40',
+  'bg-yellow-500/20 border-yellow-500/40', 'bg-blue-500/20 border-blue-500/40',
+  'bg-green-500/20 border-green-500/40',   'bg-purple-500/20 border-purple-500/40',
+  'bg-red-500/20 border-red-500/40',       'bg-indigo-500/20 border-indigo-500/40',
 ]
 
 export default function Yacht({ playerNames, onQuitToLobby }: YachtProps) {
@@ -36,9 +29,10 @@ export default function Yacht({ playerNames, onQuitToLobby }: YachtProps) {
 
   const { players, current, round, rollsLeft, dice, phase, log } = state
   const activePlayer = players[current]
-  const hasRolled = rollsLeft < 3
-  const canRoll = phase === 'rolling' && rollsLeft > 0
-  const canHold = phase === 'rolling' && hasRolled && rollsLeft > 0
+  const hasRolled   = rollsLeft < 3
+  const canRoll     = phase === 'rolling' && rollsLeft > 0
+  // Dice are holdable only between rolls 1–2 (not after roll 3 or in scoring)
+  const canHold     = phase === 'rolling' && hasRolled && rollsLeft > 0
 
   // ── Game over ───────────────────────────────────────────────────────────────
   if (phase === 'game-over') {
@@ -85,7 +79,7 @@ export default function Yacht({ playerNames, onQuitToLobby }: YachtProps) {
 
   // ── Main game screen ────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen flex flex-col p-4 gap-4 max-w-2xl mx-auto w-full">
+    <div className="min-h-screen flex flex-col p-4 gap-3 max-w-5xl mx-auto w-full">
 
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -114,78 +108,87 @@ export default function Yacht({ playerNames, onQuitToLobby }: YachtProps) {
         </div>
       </div>
 
-      {/* Dice area */}
-      <div className="bg-slate-800 rounded-2xl border border-slate-700 p-5 flex flex-col gap-5">
+      {/* ── Two-column body ────────────────────────────────────────────────── */}
+      <div className="flex flex-col lg:flex-row gap-4 flex-1">
 
-        {/* Roll counter */}
-        <div className="flex items-center justify-between">
-          <div className="flex gap-1.5">
-            {[3, 2, 1].map(r => (
-              <span
-                key={r}
-                className={`w-2.5 h-2.5 rounded-full transition-colors ${
-                  rollsLeft < r ? 'bg-yellow-400' : 'bg-slate-600'
-                }`}
-              />
-            ))}
+        {/* LEFT — Dice panel + log */}
+        <div className="flex flex-col gap-3 lg:w-72 shrink-0">
+
+          {/* Dice area */}
+          <div className="bg-slate-800 rounded-2xl border border-slate-700 p-4 flex flex-col gap-4">
+
+            {/* Roll pips + hint */}
+            <div className="flex items-center justify-between">
+              <div className="flex gap-1.5">
+                {[3, 2, 1].map(r => (
+                  <span
+                    key={r}
+                    className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                      rollsLeft < r ? 'bg-yellow-400' : 'bg-slate-600'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-slate-400 text-xs text-right leading-tight">
+                {phase === 'scoring' || rollsLeft === 0
+                  ? 'Pick a category →'
+                  : rollsLeft === 3
+                  ? 'Roll to start'
+                  : `${rollsLeft} roll${rollsLeft !== 1 ? 's' : ''} left`
+                }
+              </span>
+            </div>
+
+            {/* Dice — 2×3 grid so they never overflow */}
+            <div className="grid grid-cols-5 gap-2 justify-items-center">
+              {dice.map(die => (
+                <Die
+                  key={die.id}
+                  die={die}
+                  canHold={canHold}
+                  onToggle={() => toggleHold(die.id)}
+                />
+              ))}
+            </div>
+
+            {/* Roll / Score now buttons */}
+            <div className="flex gap-2">
+              <button
+                onClick={roll}
+                disabled={!canRoll}
+                className="flex-1 py-2.5 rounded-xl bg-yellow-400 text-slate-900 font-extrabold
+                  hover:bg-yellow-300 disabled:opacity-30 disabled:cursor-not-allowed
+                  transition-all hover:scale-[1.01] active:scale-[0.99] text-sm"
+              >
+                {!hasRolled ? '🎲 Roll!' : rollsLeft > 0 ? `🎲 Roll Again` : '🎲 No Rolls Left'}
+              </button>
+              {hasRolled && phase === 'rolling' && rollsLeft > 0 && (
+                <button
+                  onClick={scoreNow}
+                  className="px-3 py-2.5 rounded-xl bg-slate-700 text-slate-300 font-semibold text-xs
+                    hover:bg-slate-600 transition-all whitespace-nowrap"
+                >
+                  Score Now
+                </button>
+              )}
+            </div>
           </div>
-          <span className="text-slate-400 text-xs">
-            {phase === 'scoring'
-              ? 'Choose a category to score'
-              : rollsLeft === 3
-              ? 'Roll to begin your turn'
-              : rollsLeft === 0
-              ? 'No rolls left — choose a category'
-              : `${rollsLeft} roll${rollsLeft !== 1 ? 's' : ''} remaining — hold dice to keep`
-            }
-          </span>
+
+          {/* Log — stays below dice on the left */}
+          <GameLog entries={log} />
         </div>
 
-        {/* Dice */}
-        <div className="flex justify-center gap-4 pb-6">
-          {dice.map(die => (
-            <Die
-              key={die.id}
-              die={die}
-              canHold={canHold}
-              onToggle={() => toggleHold(die.id)}
-            />
-          ))}
+        {/* RIGHT — Scorecard (scrolls independently if needed) */}
+        <div className="flex-1 min-w-0">
+          <ScoreCard
+            players={players}
+            activeDice={dice}
+            phase={phase}
+            onScore={score}
+          />
         </div>
 
-        {/* Roll / Score now buttons */}
-        <div className="flex gap-3">
-          <button
-            onClick={roll}
-            disabled={!canRoll}
-            className="flex-1 py-3 rounded-xl bg-yellow-400 text-slate-900 font-extrabold text-lg
-              hover:bg-yellow-300 disabled:opacity-30 disabled:cursor-not-allowed
-              transition-all hover:scale-[1.01] active:scale-[0.99]"
-          >
-            {!hasRolled ? '🎲 Roll!' : rollsLeft > 0 ? `🎲 Roll Again (${rollsLeft} left)` : '🎲 No Rolls Left'}
-          </button>
-          {hasRolled && phase === 'rolling' && rollsLeft > 0 && (
-            <button
-              onClick={scoreNow}
-              className="px-4 py-3 rounded-xl bg-slate-700 text-slate-300 font-semibold text-sm
-                hover:bg-slate-600 transition-all"
-            >
-              Score Now
-            </button>
-          )}
-        </div>
       </div>
-
-      {/* Scorecard */}
-      <ScoreCard
-        players={players}
-        activeDice={dice}
-        phase={phase}
-        onScore={score}
-      />
-
-      {/* Game log */}
-      <GameLog entries={log} />
     </div>
   )
 }
