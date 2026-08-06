@@ -56,7 +56,14 @@ export default function ShutTheBox({ playerNames, onQuitToLobby }: ShutTheBoxPro
     const winners = state.winner.map((id) => state.players[id])
     const isTie = winners.length > 1
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center gap-6">
+      <div className="min-h-screen flex flex-col p-8 gap-6 max-w-lg mx-auto w-full">
+        <button
+          onClick={onQuitToLobby}
+          className="self-start text-sm text-slate-500 hover:text-slate-300 transition-colors"
+        >
+          ← Lobby
+        </button>
+        <div className="flex flex-col items-center text-center gap-2">
         <div className="text-8xl">{winners[0].score === 0 ? '🎉' : '🏆'}</div>
         <h1 className="text-5xl font-extrabold text-yellow-400">
           {isTie ? "It's a Tie!" : `${winners[0].name} Wins!`}
@@ -64,7 +71,8 @@ export default function ShutTheBox({ playerNames, onQuitToLobby }: ShutTheBoxPro
         <p className="text-slate-400 text-xl">
           {winners[0].score === 0 ? 'Shut the box! Perfect score!' : `Score: ${winners[0].score}`}
         </p>
-        <div className="bg-slate-800 rounded-2xl p-4 border border-slate-700 w-full max-w-sm">
+        </div>
+        <div className="bg-slate-800 rounded-2xl p-4 border border-slate-700 w-full">
           <h2 className="text-slate-400 text-sm font-semibold uppercase tracking-wide mb-3">Final Scores</h2>
           {[...state.players]
             .sort((a, b) => (a.score ?? 99) - (b.score ?? 99))
@@ -78,7 +86,7 @@ export default function ShutTheBox({ playerNames, onQuitToLobby }: ShutTheBoxPro
         </div>
         <button
           onClick={onQuitToLobby}
-          className="px-8 py-3 bg-yellow-400 text-slate-900 font-bold rounded-2xl hover:bg-yellow-300 transition-all"
+          className="w-full py-3 bg-yellow-400 text-slate-900 font-bold rounded-2xl hover:bg-yellow-300 transition-all"
         >
           ← Back to Lobby
         </button>
@@ -235,7 +243,7 @@ export default function ShutTheBox({ playerNames, onQuitToLobby }: ShutTheBoxPro
         )}
       </div>
 
-      {/* Bank sound on flip */}
+      {/* Log — fixed height, never drives page scroll */}
       <GameLog entries={state.log} />
     </div>
   )

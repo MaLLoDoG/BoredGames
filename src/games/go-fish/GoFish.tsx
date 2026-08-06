@@ -54,14 +54,22 @@ export default function GoFish({ playerNames, onQuitToLobby }: GoFishProps) {
     const maxBooks = Math.max(...players.map(p => p.books.length))
     const winnerIndices = players.map((p, i) => p.books.length === maxBooks ? i : -1).filter(i => i !== -1)
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 gap-8 max-w-md mx-auto w-full">
-        <div className="text-6xl">🏆</div>
-        <h1 className="text-3xl font-extrabold text-yellow-400 text-center">
-          {winnerIndices.length === 1
-            ? `${players[winnerIndices[0]].name} Wins!`
-            : `It's a Tie!`
-          }
-        </h1>
+      <div className="min-h-screen flex flex-col p-6 gap-6 max-w-md mx-auto w-full">
+        <button
+          onClick={onQuitToLobby}
+          className="self-start text-sm text-slate-500 hover:text-slate-300 transition-colors"
+        >
+          ← Lobby
+        </button>
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="text-6xl">🏆</div>
+          <h1 className="text-3xl font-extrabold text-yellow-400">
+            {winnerIndices.length === 1
+              ? `${players[winnerIndices[0]].name} Wins!`
+              : `It's a Tie!`
+            }
+          </h1>
+        </div>
 
         {/* Final scores */}
         <div className="w-full bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
@@ -86,7 +94,7 @@ export default function GoFish({ playerNames, onQuitToLobby }: GoFishProps) {
           onClick={onQuitToLobby}
           className="w-full py-3 bg-yellow-400 text-slate-900 font-bold rounded-2xl hover:bg-yellow-300 transition-all"
         >
-          Back to Lobby
+          ← Back to Lobby
         </button>
       </div>
     )
@@ -205,7 +213,7 @@ export default function GoFish({ playerNames, onQuitToLobby }: GoFishProps) {
         </div>
       )}
 
-      {/* Game log */}
+      {/* Log — fixed height, never drives page scroll */}
       <GameLog entries={log} />
     </div>
   )

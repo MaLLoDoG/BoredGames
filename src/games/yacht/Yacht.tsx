@@ -38,13 +38,21 @@ export default function Yacht({ playerNames, onQuitToLobby }: YachtProps) {
   if (phase === 'game-over') {
     const winnerIndices = winners(players)
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 gap-6 max-w-lg mx-auto w-full">
-        <div className="text-7xl">🏆</div>
-        <h1 className="text-4xl font-extrabold text-yellow-400 text-center">
-          {winnerIndices.length === 1
-            ? `${players[winnerIndices[0]].name} Wins!`
-            : "It's a Tie!"}
-        </h1>
+      <div className="min-h-screen flex flex-col p-6 gap-6 max-w-lg mx-auto w-full">
+        <button
+          onClick={onQuitToLobby}
+          className="self-start text-sm text-slate-500 hover:text-slate-300 transition-colors"
+        >
+          ← Lobby
+        </button>
+        <div className="flex flex-col items-center text-center gap-3">
+          <div className="text-7xl">🏆</div>
+          <h1 className="text-4xl font-extrabold text-yellow-400">
+            {winnerIndices.length === 1
+              ? `${players[winnerIndices[0]].name} Wins!`
+              : "It's a Tie!"}
+          </h1>
+        </div>
 
         <div className="w-full bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
           {[...players]
@@ -71,7 +79,7 @@ export default function Yacht({ playerNames, onQuitToLobby }: YachtProps) {
           onClick={onQuitToLobby}
           className="w-full py-3 bg-yellow-400 text-slate-900 font-bold rounded-2xl hover:bg-yellow-300 transition-all"
         >
-          Back to Lobby
+          ← Back to Lobby
         </button>
       </div>
     )

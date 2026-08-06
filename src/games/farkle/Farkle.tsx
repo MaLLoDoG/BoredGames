@@ -91,7 +91,14 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
   if (state.phase === 'game-over' && state.winner !== null) {
     const winner = state.players.find((p) => p.id === state.winner)!
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center gap-6">
+      <div className="min-h-screen flex flex-col p-8 gap-6 max-w-lg mx-auto w-full">
+        <button
+          onClick={onQuitToLobby}
+          className="self-start text-sm text-slate-500 hover:text-slate-300 transition-colors"
+        >
+          ← Lobby
+        </button>
+        <div className="flex flex-col items-center text-center gap-4">
         <div className="text-8xl">🏆</div>
         <h1 className="text-5xl font-extrabold text-yellow-400">{winner.name} Wins!</h1>
         {state.winByForfeit
@@ -110,6 +117,7 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
                 <span>{p.score.toLocaleString()}</span>
               </div>
             ))}
+        </div>
         </div>
         <button
           onClick={onQuitToLobby}
@@ -217,7 +225,7 @@ export default function Farkle({ playerNames, onQuitToLobby }: FarkleProps) {
         onQuit={handleQuit}
       />
 
-      {/* Game log §14 */}
+      {/* Game log §14 — fixed height, never drives page scroll */}
       <GameLog entries={state.log} />
     </div>
   )

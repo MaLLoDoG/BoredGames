@@ -42,6 +42,13 @@ export default function ConnectFour({ playerNames, onQuitToLobby }: ConnectFourP
 
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center gap-6">
+        {/* Back to lobby at top so it's always reachable */}
+        <button
+          onClick={onQuitToLobby}
+          className="self-start text-sm text-slate-500 hover:text-slate-300 transition-colors"
+        >
+          ← Lobby
+        </button>
         <div className="text-8xl">{isDraw ? '🤝' : '🏆'}</div>
         <h1 className={`text-5xl font-extrabold ${winnerColor?.text ?? 'text-slate-300'}`}>
           {isDraw ? "It's a Draw!" : `${winnerName} Wins!`}
@@ -146,6 +153,7 @@ export default function ConnectFour({ playerNames, onQuitToLobby }: ConnectFourP
         </button>
       </div>
 
+      {/* Log — fixed height, never drives page scroll */}
       <GameLog entries={state.log} />
     </div>
   )
