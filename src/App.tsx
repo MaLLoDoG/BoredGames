@@ -5,6 +5,7 @@ import ShutTheBox from './games/shut-the-box/ShutTheBox'
 import ConnectFour from './games/connect-four/ConnectFour'
 import GoFish from './games/go-fish/GoFish'
 import Yacht from './games/yacht/Yacht'
+import { Checkers } from './games/checkers/Checkers'
 import type { GameId } from './types/games'
 
 type AppView =
@@ -15,6 +16,7 @@ type AppView =
   | { screen: 'connect-four'; playerNames: string[] }
   | { screen: 'go-fish'; playerNames: string[] }
   | { screen: 'yacht'; playerNames: string[] }
+  | { screen: 'checkers'; playerNames: string[] }
 
 const PLAYER_COUNT_RANGE: Partial<Record<GameId, [number, number]>> = {
   'farkle': [1, 6],
@@ -22,6 +24,7 @@ const PLAYER_COUNT_RANGE: Partial<Record<GameId, [number, number]>> = {
   'connect-four': [2, 2],
   'go-fish': [2, 6],
   'yacht': [1, 6],
+  'checkers': [2, 2],
 }
 
 export default function App() {
@@ -45,6 +48,7 @@ export default function App() {
           else if (view.gameId === 'connect-four') setView({ screen: 'connect-four', playerNames: names })
           else if (view.gameId === 'go-fish') setView({ screen: 'go-fish', playerNames: names })
           else if (view.gameId === 'yacht') setView({ screen: 'yacht', playerNames: names })
+          else if (view.gameId === 'checkers') setView({ screen: 'checkers', playerNames: names })
           else setView({ screen: 'lobby' })
         }}
         onBack={() => setView({ screen: 'lobby' })}
@@ -93,6 +97,15 @@ export default function App() {
       <Yacht
         playerNames={view.playerNames}
         onQuitToLobby={() => setView({ screen: 'lobby' })}
+      />
+    )
+  }
+
+  if (view.screen === 'checkers') {
+    return (
+      <Checkers
+        players={view.playerNames}
+        onQuit={() => setView({ screen: 'lobby' })}
       />
     )
   }
