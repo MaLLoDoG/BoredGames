@@ -77,15 +77,15 @@ export default function Yacht({ playerNames, onQuitToLobby }: YachtProps) {
     )
   }
 
-  // ── Main game screen — fixed to viewport, no page scroll ───────────────────
+  // ── Main game screen — mobile-first, consistent with all other games ────────
   return (
-    <div className="h-screen overflow-hidden flex flex-col p-3 gap-2 max-w-3xl mx-auto">
+    <div className="min-h-screen flex flex-col p-4 gap-4 max-w-3xl mx-auto w-full">
       {showRules && <RulesModal rules={rules} onClose={() => setShowRules(false)} />}
 
-      {/* Header — 1 line */}
+      {/* Header */}
       <div className="flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
-          <h1 className="text-xl font-extrabold text-yellow-400">⚀ Yacht</h1>
+          <h1 className="text-2xl font-extrabold text-yellow-400">⚀ Yacht</h1>
           <div className={`rounded-lg border px-3 py-1 flex items-center gap-2 ${PLAYER_BG[current % PLAYER_BG.length]}`}>
             <span className={`font-bold text-sm ${PLAYER_COLORS[current % PLAYER_COLORS.length]}`}>{activePlayer.name}</span>
             <span className="text-slate-500 text-xs">· Round {round}/12</span>
@@ -97,13 +97,13 @@ export default function Yacht({ playerNames, onQuitToLobby }: YachtProps) {
         </div>
       </div>
 
-      {/* Body — fills remaining height, never overflows */}
-      <div className="flex gap-4 flex-1 min-h-0">
+      {/* Body — stacked on mobile, side-by-side on md+ */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-start">
 
-        {/* LEFT — dice + log. w-96 = 384px, plenty for 5 × w-16 dice + gaps */}
-        <div className="flex flex-col gap-3 w-96 shrink-0">
+        {/* Dice panel — full width mobile, fixed width on md+ */}
+        <div className="flex flex-col gap-3 md:w-96 md:shrink-0">
 
-          <div className="bg-slate-800 rounded-2xl border border-slate-700 p-4 flex flex-col gap-4 shrink-0">
+          <div className="bg-slate-800 rounded-2xl border border-slate-700 p-4 flex flex-col gap-4">
             {/* Roll pips + hint */}
             <div className="flex items-center justify-between">
               <div className="flex gap-1.5">
@@ -142,14 +142,14 @@ export default function Yacht({ playerNames, onQuitToLobby }: YachtProps) {
             </div>
           </div>
 
-          {/* Log — fills remaining left height, scrolls internally only */}
-          <div className="flex-1 min-h-0 overflow-hidden rounded-xl">
+          {/* Log — contained height, never drives page scroll */}
+          <div className="h-36 overflow-hidden rounded-xl">
             <GameLog entries={log} />
           </div>
         </div>
 
-        {/* RIGHT — scorecard: max-w-sm keeps it from ballooning; scrolls internally */}
-        <div className="max-w-sm w-full overflow-y-auto min-h-0">
+        {/* Scorecard — full width mobile, fills remaining space on md+ */}
+        <div className="flex-1 min-w-0">
           <ScoreCard players={players} activeDice={dice} phase={phase} onScore={score} />
         </div>
 
