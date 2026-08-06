@@ -57,7 +57,7 @@ export const GAMES: GameDefinition[] = [
     minPlayers: 2,
     maxPlayers: 6,
     category: 'dice',
-    available: false,
+    available: true,
   },
 
   // ── Board ────────────────────────────────────────────────────────────────────

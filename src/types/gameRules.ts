@@ -6,6 +6,7 @@ import farkleRules from '../games/farkle/rules'
 import shutTheBoxRules from '../games/shut-the-box/rules'
 import connectFourRules from '../games/connect-four/rules'
 import goFishRules from '../games/go-fish/rules'
+import yachtRules from '../games/yacht/rules'
 import type { GameRules } from './rules'
 import type { GameId } from './games'
 
@@ -14,4 +15,5 @@ export const GAME_RULES: Partial<Record<GameId, GameRules>> = {
   'shut-the-box': shutTheBoxRules,
   'connect-four': connectFourRules,
   'go-fish': goFishRules,
+  'yacht': yachtRules,
 }
