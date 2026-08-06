@@ -2,6 +2,7 @@ import { useReducer, useCallback } from 'react';
 import {
   initialState,
   actionSelect,
+  actionDeselect,
   actionMove,
   actionContinueChain,
   actionResign,
@@ -13,6 +14,7 @@ import type { CheckersState } from './engine';
 
 type Action =
   | { type: 'select'; idx: number }
+  | { type: 'deselect' }
   | { type: 'move'; idx: number }
   | { type: 'chain'; idx: number }
   | { type: 'resign' }
@@ -24,6 +26,7 @@ type Action =
 function reducer(state: CheckersState, action: Action): CheckersState {
   switch (action.type) {
     case 'select': return actionSelect(state, action.idx);
+    case 'deselect': return actionDeselect(state);
     case 'move': return actionMove(state, action.idx);
     case 'chain': return actionContinueChain(state, action.idx);
     case 'resign': return actionResign(state);
@@ -39,6 +42,7 @@ export function useCheckers() {
   const [state, dispatch] = useReducer(reducer, undefined, initialState);
 
   const select = useCallback((idx: number) => dispatch({ type: 'select', idx }), []);
+  const deselect = useCallback(() => dispatch({ type: 'deselect' }), []);
   const move = useCallback((idx: number) => dispatch({ type: 'move', idx }), []);
   const chain = useCallback((idx: number) => dispatch({ type: 'chain', idx }), []);
   const resign = useCallback(() => dispatch({ type: 'resign' }), []);
@@ -47,5 +51,5 @@ export function useCheckers() {
   const declineDraw = useCallback(() => dispatch({ type: 'declineDraw' }), []);
   const reset = useCallback(() => dispatch({ type: 'reset' }), []);
 
-  return { state, select, move, chain, resign, offerDraw, acceptDraw, declineDraw, reset };
+  return { state, select, deselect, move, chain, resign, offerDraw, acceptDraw, declineDraw, reset };
 }

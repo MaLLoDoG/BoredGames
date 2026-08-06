@@ -24,7 +24,7 @@ function cellColor(cell: Cell): string {
 }
 
 export function Checkers({ players, onQuit }: CheckersProps) {
-  const { state, select, move, chain, resign, offerDraw, acceptDraw, declineDraw, reset } = useCheckers();
+  const { state, select, deselect, move, chain, resign, offerDraw, acceptDraw, declineDraw, reset } = useCheckers();
   const [showRules, setShowRules] = useState(false);
   const [showLog, setShowLog] = useState(false);
 
@@ -49,7 +49,10 @@ export function Checkers({ players, onQuit }: CheckersProps) {
       return;
     }
     if (phase === 'move') {
-      if (legalMoves.includes(idx)) {
+      if (idx === selected) {
+        // clicking the selected piece again deselects it
+        deselect();
+      } else if (legalMoves.includes(idx)) {
         move(idx);
       } else if (isOwn) {
         // re-select a different piece

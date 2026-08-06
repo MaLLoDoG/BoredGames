@@ -155,6 +155,12 @@ export function initialState(): CheckersState {
   };
 }
 
+// §9 actionDeselect — cancel a selection and return to piece-pick
+export function actionDeselect(state: CheckersState): CheckersState {
+  if (state.phase !== 'move') return state;
+  return { ...state, phase: 'select', selected: null, legalMoves: [] };
+}
+
 // §9 actionSelect
 export function actionSelect(state: CheckersState, pieceIdx: number): CheckersState {
   if (state.phase !== 'select') return state;
